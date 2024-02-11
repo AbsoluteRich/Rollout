@@ -1,5 +1,5 @@
 src/*
-!src/template.py
+!src/template.jinja2
 archives/
 
 # Byte-compiled / optimized / DLL files

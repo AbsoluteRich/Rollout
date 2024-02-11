@@ -1,6 +1,7 @@
 import argparse
 import os
 import subprocess
+from jinja2 import Environment, FileSystemLoader
 
 
 # Todo: Split this one big function up into parts
@@ -12,9 +13,15 @@ def create_project(project_name: str, venv_name: str = "venv", packages: list[st
     print(" done.", flush=True)
 
     print("Setting up project...", end="", flush=True)
-    with open("template.py") as template:
-        with open(f"{project_name}/src/main.py", "w") as f:
-            f.write(template.read())
+    jinja = Environment(loader=FileSystemLoader(os.getcwd()))
+    template = jinja.get_template("template.jinja2")
+    if packages:
+        template = template.render(dependencies=packages)
+    else:
+        template = template.render()
+
+    with open(f"{project_name}/src/main.py", "w") as f:
+        f.write(template)
     print(" done.", flush=True)
 
     print("Setting up virtual environment...", end="", flush=True)
@@ -30,10 +37,11 @@ def create_project(project_name: str, venv_name: str = "venv", packages: list[st
         arguments.extend(packages)
         subprocess.run(arguments, shell=True, check=True)
 
-        for _ in range(3):  # Gets from project\venv\Scripts to project
+        for _ in range(2):  # Gets from project\venv\Scripts to project
             os.chdir(os.path.split(os.getcwd())[0])
+        return True, os.getcwd()
 
-    return True, os.getcwd()
+    return True, os.path.join(os.getcwd(), project_name)
 
 
 cli = argparse.ArgumentParser(
