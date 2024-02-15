@@ -2,17 +2,19 @@ import argparse
 import os
 from subprocess import run
 from jinja2 import Environment, FileSystemLoader
+from halo import Halo
 
 
-# Todo: Split this one big function up into parts
+# https://github.com/manrajgrover/halo/issues/5
 def create_project(project_name: str, venv_name: str = "venv", packages: list[str] | None = None) -> tuple[bool, str]:
-    print("Creating project folders...", end=" ", flush=True)
+    spinner = Halo("Creating project folders...").start()
     if os.path.exists(project_name):
+        spinner.fail()
         return False, "Folder already exists. Try renaming or deleting it."
     os.makedirs(f"{project_name}/src")
-    print("done.", flush=True)
+    spinner.succeed(spinner.text + " Done!")
 
-    print("Setting up project...", end=" ", flush=True)
+    spinner = Halo("Setting up project...").start()
     jinja = Environment(loader=FileSystemLoader(os.getcwd()))
     template = jinja.get_template("template.jinja2")
     if packages:
@@ -22,13 +24,13 @@ def create_project(project_name: str, venv_name: str = "venv", packages: list[st
 
     with open(f"{project_name}/src/main.py", "w") as f:
         f.write(template)
-    print("done.", flush=True)
+    spinner.succeed(spinner.text + " Done!")
 
-    print("Setting up virtual environment...", end=" ", flush=True)
+    spinner = Halo("Setting up virtual environment...").start()
     os.chdir(project_name)
     run(["python", "-m", "venv", venv_name], check=True)
     os.chdir(os.path.split(os.getcwd())[0])
-    print("done.", flush=True)
+    spinner.succeed(spinner.text + " Done!")
 
     if packages:
         print("Installing packages via the virtual environment's pip", flush=True)
@@ -41,11 +43,11 @@ def create_project(project_name: str, venv_name: str = "venv", packages: list[st
 
         for _ in range(2):  # Gets from project\venv\Scripts to project
             os.chdir(os.path.split(os.getcwd())[0])
-        
-        print("Creating requirements file...", end=" ", flush=True)
+
+        spinner = Halo("Creating requirements file...").start()
         with open("requirements.txt", "w") as f:
             f.write(requirements)
-        print("done.")
+        spinner.succeed(spinner.text + " Done!")
 
         return True, os.getcwd()
 
