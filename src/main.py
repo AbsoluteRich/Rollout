@@ -25,11 +25,6 @@ def create_entrypoint(project_name: str, packages: list) -> None:
         f.write(template)
 
 
-def create_requirements_file(requirements: str) -> None:
-    with open("requirements.txt", "w") as f:
-        f.write(requirements)
-
-
 # https://github.com/manrajgrover/halo/issues/5
 def main(project_name: str, venv_name: str = "venv", packages: list[str] | None = None) -> tuple[bool, str]:
     spinner = Halo("Creating project folders...").start()
@@ -44,35 +39,26 @@ def main(project_name: str, venv_name: str = "venv", packages: list[str] | None 
     spinner.succeed(spinner.text + " Done!")
 
     spinner = Halo("Setting up virtual environment...").start()
-    os.chdir(project_name)
-    venv(venv_name)
-    os.chdir(os.path.split(os.getcwd())[0])
+    venv(os.path.join(project_name, venv_name))
     spinner.succeed(spinner.text + " Done!")
 
     if packages:
-        os.chdir(os.path.join(project_name, venv_name, "Scripts"))
+        pip_path = os.path.join(project_name, venv_name, "Scripts")
+        pip_executable = os.path.join(pip_path, "pip.exe")
 
         for package in packages:
-            spinner = Halo(f"Installing {package} in venv...")
-            output = pip_install("pip.exe", package, capture_output=True, text=True).stdout
-            with open("pip-log.txt", "w") as f:
+            spinner = Halo(f"Installing {package} in venv...").start()
+            output = pip_install(pip_executable, package, capture_output=True, text=True).stdout
+            with open(os.path.join(project_name, "pip-log.txt"), "w") as f:
                 f.write(output)
             spinner.succeed(spinner.text + " Done!")
 
-        requirements = pip_freeze("pip.exe", capture_output=True, text=True).stdout
-
-        for _ in range(2):  # Gets from project\venv\Scripts to project
-            os.chdir(os.path.split(os.getcwd())[0])
+        requirements = pip_freeze(pip_executable, capture_output=True, text=True).stdout
 
         spinner = Halo("Creating requirements file...").start()
-        create_requirements_file(requirements)
+        with open(os.path.join(project_name, "requirements.txt"), "w") as f:
+            f.write(requirements)
         spinner.succeed(spinner.text + " Done!")
-
-        spinner = Halo("Moving pip-log...").start()
-        move(os.path.join(venv_name, "Scripts", "pip-log.txt"), os.getcwd())
-        spinner.succeed(spinner.text + " Done!")
-
-        return True, os.getcwd()
 
     return True, os.path.join(os.getcwd(), project_name)
 
@@ -100,5 +86,7 @@ if __name__ == "__main__":
     result = main(args.project_name, packages=args.dependencies)
     if result[0]:
         print(f"Your new project can be found at {result[1]}")
+        print("If you don't want to see the output for the commands, you can delete 'pip-log.txt'.")
     else:
         print(f"[error] {result[1]}")
+        print("Reading 'pip-log.txt' might help you solve your problem.")
