@@ -48,16 +48,13 @@ def main(project_name: str, venv_name: str = "venv", packages: list[str] | None 
 
         for package in packages:
             spinner = Halo(f"Installing {package} in venv...").start()
-            output = pip_install(pip_executable, package, capture_output=True, text=True).stdout
-            with open(os.path.join(project_name, "pip-log.txt"), "w") as f:
-                f.write(output)
+            with open(os.path.join(project_name, "pip-log.txt"), "a") as f:
+                pip_install(pip_executable, package, stdout=f, text=True)
             spinner.succeed(spinner.text + " Done!")
-
-        requirements = pip_freeze(pip_executable, capture_output=True, text=True).stdout
 
         spinner = Halo("Creating requirements file...").start()
         with open(os.path.join(project_name, "requirements.txt"), "w") as f:
-            f.write(requirements)
+            pip_freeze(pip_executable, stdout=f, text=True)
         spinner.succeed(spinner.text + " Done!")
 
     return True, os.path.join(os.getcwd(), project_name)
@@ -86,7 +83,7 @@ if __name__ == "__main__":
     result = main(args.project_name, packages=args.dependencies)
     if result[0]:
         print(f"Your new project can be found at {result[1]}")
-        print("If you don't want to see the output for the commands, you can delete 'pip-log.txt'.")
+        print("If you don't need to see the output for the commands, you can delete 'pip-log.txt'.")
     else:
         print(f"[error] {result[1]}")
         print("Reading 'pip-log.txt' might help you solve your problem.")
