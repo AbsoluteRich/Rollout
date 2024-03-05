@@ -49,12 +49,12 @@ def main(project_name: str, venv_name: str = "venv", packages: list[str] | None 
         for package in packages:
             spinner = Halo(f"Installing {package} in venv...").start()
             with open(os.path.join(project_name, "pip-log.txt"), "a") as f:
-                pip_install(pip_executable, package, stdout=f, text=True)
+                pip_install(pip_executable, package, stdout=f, stderr=f, text=True)
             spinner.succeed(spinner.text + " Done!")
 
         spinner = Halo("Creating requirements file...").start()
         with open(os.path.join(project_name, "requirements.txt"), "w") as f:
-            pip_freeze(pip_executable, stdout=f, text=True)
+            pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
         spinner.succeed(spinner.text + " Done!")
 
     return True, os.path.join(os.getcwd(), project_name)
