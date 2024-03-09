@@ -85,9 +85,10 @@ def setup_cli() -> argparse.ArgumentParser:
 
 if __name__ == "__main__":
     args = setup_cli().parse_args()
-    print(args)
 
     if args.venv_name == "None":
+        if args.dependencies:
+            print("Packages will be ignored, as there is no virtual environment to install them to")
         result = main(
             args.project_name,
             packages=args.dependencies,
