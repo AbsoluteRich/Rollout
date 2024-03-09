@@ -3,7 +3,7 @@ import os
 from jinja2 import Environment, FileSystemLoader
 from halo import Halo
 from commands import venv, pip_install, pip_freeze
-from shutil import move
+from sys import exit
 
 
 def create_project_folders(project_name: str) -> bool:
@@ -26,7 +26,7 @@ def create_entrypoint(project_name: str, packages: list) -> None:
 
 
 # https://github.com/manrajgrover/halo/issues/5
-def main(project_name: str, venv_name: str = "venv", packages: list[str] | None = None) -> tuple[bool, str]:
+def main(project_name: str, venv_name: str, packages: list[str] | None = None) -> tuple[bool, str]:
     spinner = Halo("Creating project folders...").start()
     success = create_project_folders(project_name)
     if not success:
@@ -38,16 +38,17 @@ def main(project_name: str, venv_name: str = "venv", packages: list[str] | None 
     create_entrypoint(project_name, packages)
     spinner.succeed(spinner.text + " Done!")
 
-    spinner = Halo("Setting up virtual environment...").start()
-    venv(os.path.join(project_name, venv_name))
-    spinner.succeed(spinner.text + " Done!")
+    if venv_name:
+        spinner = Halo("Setting up virtual environment...").start()
+        venv(os.path.join(project_name, venv_name))
+        spinner.succeed(spinner.text + " Done!")
 
-    if packages:
+    if packages and venv_name:
         pip_path = os.path.join(project_name, venv_name, "Scripts")
         pip_executable = os.path.join(pip_path, "pip.exe")
 
         for package in packages:
-            spinner = Halo(f"Installing {package} in venv...").start()
+            spinner = Halo(f"Installing {package} in {venv_name}...").start()
             with open(os.path.join(project_name, "pip-log.txt"), "a") as f:
                 pip_install(pip_executable, package, stdout=f, stderr=f, text=True)
             spinner.succeed(spinner.text + " Done!")
@@ -68,10 +69,14 @@ def setup_cli() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "project_name", help="Name of the project",
+        "project_name", help="Name of the project.",
     )
     parser.add_argument(
-        "--dependencies", "-d", help="Packages to install in the virtual environment",
+        "--venv-name", help="What to name the virtual environment (.venv by default).\nIf called 'None', disables virtual environment creation.",
+        default=".venv"
+    )
+    parser.add_argument(
+        "--dependencies", "-d", help="Packages to install in the virtual environment (if any).",
         nargs="+",
     )
 
@@ -80,10 +85,26 @@ def setup_cli() -> argparse.ArgumentParser:
 
 if __name__ == "__main__":
     args = setup_cli().parse_args()
-    result = main(args.project_name, packages=args.dependencies)
+    print(args)
+
+    if args.venv_name == "None":
+        result = main(
+            args.project_name,
+            packages=args.dependencies,
+            venv_name=None
+        )
+    else:
+        result = main(
+            args.project_name,
+            packages=args.dependencies,
+            venv_name=args.venv_name
+        )
+    
     if result[0]:
         print(f"Your new project can be found at {result[1]}")
-        print("If you don't need to see the output for the commands, you can delete 'pip-log.txt'.")
+        if args.dependencies:
+            print("If you don't need to see the output for the commands, you can delete 'pip-log.txt'.")
     else:
         print(f"[error] {result[1]}")
-        print("Reading 'pip-log.txt' might help you solve your problem.")
+        if args.dependencies:
+            print("Reading 'pip-log.txt' might help you solve your problem.")
