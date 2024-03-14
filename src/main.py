@@ -86,11 +86,12 @@ def setup_cli() -> argparse.ArgumentParser:
 
 
 if __name__ == "__main__":
-    args = setup_cli().parse_args()
+    cli = setup_cli()
+    args = cli.parse_args()
 
     if args.venv_name == "None":
         if args.dependencies:
-            print("Packages will be ignored, as there is no virtual environment to install them to")
+            print("Packages will be ignored, as there is no virtual environment to install them to.")
         result = main(
             args.project_name,
             packages=args.dependencies,
@@ -108,6 +109,7 @@ if __name__ == "__main__":
         if args.dependencies:
             print("If you don't need to see the output for the commands, you can delete 'pip-log.txt'.")
     else:
-        print(f"[error] {result[1]}")
+        error_message = result[1]
         if args.dependencies:
-            print("Reading 'pip-log.txt' might help you solve your problem.")
+            error_message += "\nReading 'pip-log.txt' might help you solve your problem."
+        cli.error(error_message)
