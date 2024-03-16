@@ -30,6 +30,8 @@ def create_entrypoint(project_name: str, packages: list) -> None:
 def main(
     project_name: str, venv_name: str, packages: list[str] | None = None
 ) -> tuple[bool, Path]:
+    project_path = Path(project_name)
+
     spinner = Halo("Creating project folders...").start()
     success = create_project_folders(project_name)
     if not success:
@@ -43,21 +45,20 @@ def main(
 
     if venv_name:
         spinner = Halo("Setting up virtual environment...").start()
-        venv(Path(project_name) / venv_name)
+        venv(project_path / venv_name)
         spinner.succeed(spinner.text + " Done!")
 
     if packages and venv_name:
-        pip_path = Path(project_name) / venv_name / "Scripts"
-        pip_executable = Path(pip_path) / "pip.exe"
+        pip_executable = project_path / venv_name / "Scripts" / "pip.exe"
 
         for package in packages:
             spinner = Halo(f"Installing {package} in {venv_name}...").start()
-            with open(Path(project_name) / "pip.exe", "a") as f:
+            with open(project_path / "pip-log.txt", "a") as f:
                 pip_install(pip_executable, package, stdout=f, stderr=f, text=True)
             spinner.succeed(spinner.text + " Done!")
 
         spinner = Halo("Creating requirements file...").start()
-        with open(Path(project_name) / "requirements.txt", "w") as f:
+        with open(project_path / "requirements.txt", "w") as f:
             pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
         spinner.succeed(spinner.text + " Done!")
 
