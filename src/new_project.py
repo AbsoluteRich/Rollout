@@ -27,7 +27,7 @@ def create_entrypoint(project_name: str, packages: list) -> None:
 
 
 # https://github.com/manrajgrover/halo/issues/5
-def main(
+def run(
     project_name: str, venv_name: str, packages: list[str] | None = None
 ) -> tuple[bool, Path]:
     project_path = Path(project_name)

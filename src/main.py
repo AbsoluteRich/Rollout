@@ -1,5 +1,6 @@
 import argparse
 import new_project
+import start_project
 
 
 def setup_cli() -> argparse.ArgumentParser:
@@ -8,38 +9,46 @@ def setup_cli() -> argparse.ArgumentParser:
         description="Your one-stop solution to bootstrap Python projects, including essentials like Git and a virtual "
         "environment.",
     )
+    subparsers = parser.add_subparsers()
 
-    parser.add_argument(
+    new = subparsers.add_parser("new", help="Placeholder")
+    new.add_argument(
         "project_name",
         help="Name of the project.",
     )
-    parser.add_argument(
+    new.add_argument(
         "--venv-name",
         help="What to name the virtual environment (.venv by default).\nIf called 'None', disables virtual environment creation.",
         default=".venv",
     )
-    parser.add_argument(
+    new.add_argument(
         "--dependencies",
         "-d",
         help="Packages to install in the virtual environment (if any).",
         nargs="+",
     )
+    new.set_defaults(func=handle_new)
+
+    start = subparsers.add_parser("start", help="Placeholder 2")
+    start.add_argument(
+        "editor", help="The text editor to open the project in. Supported:"
+    )
+    start.set_defaults(func=handle_start)
 
     return parser
 
 
-if __name__ == "__main__":
-    cli = setup_cli()
-    args = cli.parse_args()
-
+def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
     if args.venv_name == "None":
         if args.dependencies:
             print(
                 "Packages will be ignored, as there is no virtual environment to install them to."
             )
-        result = new_project.main(args.project_name, packages=args.dependencies, venv_name=None)
+        result = new_project.run(
+            args.project_name, packages=args.dependencies, venv_name=None
+        )
     else:
-        result = new_project.main(
+        result = new_project.run(
             args.project_name, packages=args.dependencies, venv_name=args.venv_name
         )
 
@@ -56,3 +65,17 @@ if __name__ == "__main__":
                 "\nReading 'pip-log.txt' might help you solve your problem."
             )
         cli.error(error_message)
+
+
+def handle_start(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
+    start_project.run(args)
+
+
+if __name__ == "__main__":
+    cli = setup_cli()
+    args = cli.parse_args()
+
+    if hasattr(args, "func"):
+        args.func(args, cli)
+    else:
+        cli.print_help()
