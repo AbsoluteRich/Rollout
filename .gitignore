@@ -1,6 +1,7 @@
 src/*
 !src/template.jinja2
 !src/commands.py
+!src/new_project.py
 archives/
 
 # Byte-compiled / optimized / DLL files
