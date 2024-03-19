@@ -39,18 +39,14 @@ def setup_cli() -> argparse.ArgumentParser:
 
 
 def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
-    if args.venv_name == "None":
-        if args.dependencies:
-            print(
-                "Packages will be ignored, as there is no virtual environment to install them to."
-            )
-        result = new_project.run(
-            args.project_name, packages=args.dependencies, venv_name=None
+    venv_name = None if args.venv_name == "None" else args.venv_name
+    if not args.venv_name and args.dependencies:
+        print(
+            "Packages will be ignored, as there is no virtual environment to install them to."
         )
-    else:
-        result = new_project.run(
-            args.project_name, packages=args.dependencies, venv_name=args.venv_name
-        )
+    result = new_project.run(
+        args.project_name, packages=args.dependencies, venv_name=venv_name
+    )
 
     if result[0]:
         print(f"Your new project can be found at {result[1]}")
