@@ -11,14 +11,16 @@ def setup_cli() -> argparse.ArgumentParser:
     )
     subparsers = parser.add_subparsers()
 
-    new = subparsers.add_parser("new", help="Placeholder")
+    new = subparsers.add_parser(
+        "new", help="Create a new Python project with virtual environment."
+    )
     new.add_argument(
         "project_name",
         help="Name of the project.",
     )
     new.add_argument(
         "--venv-name",
-        help="What to name the virtual environment (.venv by default).\nIf called 'None', disables virtual environment creation.",
+        help="What to name the virtual environment (.venv by default).\nIf 'None', disables environment creation.",
         default=".venv",
     )
     new.add_argument(
@@ -29,10 +31,12 @@ def setup_cli() -> argparse.ArgumentParser:
     )
     new.set_defaults(func=handle_new)
 
-    start = subparsers.add_parser("start", help="Placeholder 2")
+    start = subparsers.add_parser(
+        "start", help="Open a project in your editor of choice."
+    )
     start.add_argument(
         "editor",
-        help="The text editor to open the project in (default: Notepad). Supported: VS Code, PyCharm, IDLE, Notepad, and Notepad++.",
+        help="The text editor to open the project in. Supported: VS Code, PyCharm, IDLE, Notepad, and Notepad++.",
     )
     start.set_defaults(func=handle_start)
 
@@ -55,6 +59,7 @@ def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
             print(
                 "If you don't need to see the output for the commands, you can delete 'pip-log.txt'."
             )
+        print(f"Maybe you'd like to open {args.project_name} using 'rollout start'?")
     else:
         error_message = result[1]
         if args.dependencies:
@@ -65,7 +70,13 @@ def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
 
 
 def handle_start(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
-    start_project.run(args)
+    valid_path, _ = start_project.check_directory()
+    if valid_path:
+        start_project.run(args)
+    else:
+        cli.error(
+            "Couldn't find code files!\nAre you running this in the root of a programming project?"
+        )
 
 
 if __name__ == "__main__":
