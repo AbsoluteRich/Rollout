@@ -31,7 +31,8 @@ def setup_cli() -> argparse.ArgumentParser:
 
     start = subparsers.add_parser("start", help="Placeholder 2")
     start.add_argument(
-        "editor", help="The text editor to open the project in. Supported:"
+        "editor",
+        help="The text editor to open the project in (default: Notepad). Supported: VS Code, PyCharm, IDLE, Notepad, and Notepad++.",
     )
     start.set_defaults(func=handle_start)
 
