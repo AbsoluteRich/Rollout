@@ -1,6 +1,7 @@
 import argparse
 import new_project
 import start_project
+import initialise_git
 
 
 def setup_cli() -> argparse.ArgumentParser:
@@ -41,6 +42,15 @@ def setup_cli() -> argparse.ArgumentParser:
     )
     start.set_defaults(func=handle_start)
 
+    git = subparsers.add_parser(
+        "git",
+        help="Create a Git repository and initialises it with a gitignore and licence. Must have Git installed.",
+    )
+    git.add_argument(
+        "licence", help="The licence to be added to the project. Default: GNU GPLv3"
+    )
+    start.set_defaults(func=handle_git)
+
     return parser
 
 
@@ -76,6 +86,10 @@ def handle_start(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None
         start_project.run(args)
     else:
         cli.error("Couldn't find code files!")
+
+
+def handle_git(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
+    initialise_git.run(args, cli)
 
 
 if __name__ == "__main__":

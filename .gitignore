@@ -4,6 +4,7 @@ src/*
 !src/new_project.py
 !src/start_project.py
 !src/custom_types.py
+!src/initialise_git.py
 archives/
 
 # Byte-compiled / optimized / DLL files
