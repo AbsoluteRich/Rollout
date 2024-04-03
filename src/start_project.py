@@ -8,7 +8,7 @@ def check_directory() -> tuple[True, Path] | tuple[False, None]:
     cwd = Path.cwd()
     if (cwd / "src" / "main.py").exists():
         return True, cwd / "src" / "main.py"
-    #elif (cwd / "main.py").exists():  The command should only be runnable in the root of a project
+    # elif (cwd / "main.py").exists():  The command should only be runnable in the root of a project
     #    return True, cwd / "main.py"
     else:
         return False, None

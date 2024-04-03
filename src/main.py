@@ -80,10 +80,10 @@ def handle_start(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None
 
 
 if __name__ == "__main__":
-    cli = setup_cli()
-    args = cli.parse_args()
+    current_cli = setup_cli()
+    current_args = current_cli.parse_args()
 
-    if hasattr(args, "func"):
-        args.func(args, cli)
+    if hasattr(current_args, "func"):
+        current_args.func(current_args, current_cli)
     else:
-        cli.print_help()
+        current_cli.print_help()

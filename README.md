@@ -12,7 +12,7 @@ Rollout was made to learn more about CLIs and how to make them using Python. If 
 * ...want a **simple project maker** without any fancy bells or whistles, this is the place.
 * ...want **customisable project templates** and a rich ecosystem of them, use [Cookiecutter](https://www.cookiecutter.io/).
 * ...have **Node.js installed** or want an alternative to Cookiecutter, you can use [generator-python](https://github.com/thejohnfreeman/generator-python), a project generator built with [Yeoman](https://yeoman.io/).
-* ...want **advanced dependancy management**, use the myriad tools out there like [Poetry](https://python-poetry.org/) or [pipenv](https://pipenv.pypa.io/en/latest/).
+* ...want **advanced dependency management**, use the myriad tools out there like [Poetry](https://python-poetry.org/) or [pipenv](https://pipenv.pypa.io/en/latest/).
 
 ## Install
 

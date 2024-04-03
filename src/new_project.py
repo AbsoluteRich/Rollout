@@ -29,7 +29,7 @@ def create_entrypoint(project_name: str, packages: list) -> None:
 # https://github.com/manrajgrover/halo/issues/5
 def run(
     project_name: str, venv_name: str, packages: list[str] | None = None
-) -> tuple[bool, Path]:
+) -> tuple[True, Path] | tuple[False, str]:
     project_path = Path(project_name)
 
     spinner = Halo("Creating project folders...").start()

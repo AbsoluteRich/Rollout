@@ -1,29 +1,32 @@
 from subprocess import run, CompletedProcess
 from sys import executable as python_exe
 from pathlib import Path
+from os import PathLike
+
+pathlike = Path | str | PathLike
 
 
-def venv(venv_name: str, *args, **kwargs) -> CompletedProcess:
+def venv(venv_name: pathlike, *args, **kwargs) -> CompletedProcess:
     return run([python_exe, "-m", "venv", venv_name], *args, **kwargs)
 
 
 def pip_install(
-    executable_path: str, package_name: str, *args, **kwargs
+        executable_path: pathlike, package_name: str, *args, **kwargs
 ) -> CompletedProcess:
     parameters = [executable_path, "install", package_name]
     return run(parameters, *args, **kwargs)
 
 
-def pip_freeze(executable_path: str, *args, **kwargs) -> CompletedProcess:
+def pip_freeze(executable_path: pathlike, *args, **kwargs) -> CompletedProcess:
     parameters = [executable_path, "freeze"]
     return run(parameters, *args, **kwargs)
 
 
-def vsc(project_path: Path) -> CompletedProcess:
+def vsc(project_path: pathlike) -> CompletedProcess:
     return run(["code", project_path])
 
 
-def pycharm(project_path: Path) -> CompletedProcess:
+def pycharm(project_path: pathlike) -> CompletedProcess:
     return run(["pycharm", project_path])
 
 
