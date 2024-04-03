@@ -1,4 +1,8 @@
+# PyCharm bug?
+# noinspection PyPackageRequirements
 from jinja2 import Environment, FileSystemLoader
+
+# noinspection PyPackageRequirements
 from halo import Halo
 from commands import venv, pip_install, pip_freeze
 from pathlib import Path

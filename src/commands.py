@@ -1,9 +1,7 @@
 from subprocess import run, CompletedProcess
 from sys import executable as python_exe
 from pathlib import Path
-from os import PathLike
-
-pathlike = Path | str | PathLike
+from custom_types import pathlike
 
 
 def venv(venv_name: pathlike, *args, **kwargs) -> CompletedProcess:
@@ -11,7 +9,7 @@ def venv(venv_name: pathlike, *args, **kwargs) -> CompletedProcess:
 
 
 def pip_install(
-        executable_path: pathlike, package_name: str, *args, **kwargs
+    executable_path: pathlike, package_name: str, *args, **kwargs
 ) -> CompletedProcess:
     parameters = [executable_path, "install", package_name]
     return run(parameters, *args, **kwargs)

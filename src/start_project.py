@@ -4,19 +4,16 @@ from argparse import Namespace
 from os.path import split
 
 
-def check_directory() -> tuple[True, Path] | tuple[False, None]:
-    cwd = Path.cwd()
-    if (cwd / "src" / "main.py").exists():
-        return True, cwd / "src" / "main.py"
-    # elif (cwd / "main.py").exists():  The command should only be runnable in the root of a project
-    #    return True, cwd / "main.py"
+def check_project(path: Path) -> tuple[True, Path] | tuple[False, None]:
+    if (path / "src" / "main.py").exists():
+        return True, path / "src" / "main.py"
     else:
         return False, None
 
 
 def run(args: Namespace) -> None:
     # Valid paths are checked in the CLI handler, so assume check_directory returns something
-    _, file_path = check_directory()
+    _, file_path = check_project(args.project_path)
     project_path = split(file_path)[0]
 
     match args.editor:
@@ -40,4 +37,4 @@ def run(args: Namespace) -> None:
 
 
 if __name__ == "__main__":
-    print(check_directory())
+    print(check_project(Path.cwd()))

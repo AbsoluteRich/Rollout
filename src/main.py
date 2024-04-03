@@ -34,9 +34,10 @@ def setup_cli() -> argparse.ArgumentParser:
     start = subparsers.add_parser(
         "start", help="Open a project in your editor of choice."
     )
+    start.add_argument("project_path", help="Path to the project.")
     start.add_argument(
         "editor",
-        help="The text editor to open the project in. Supported: VS Code, PyCharm, IDLE, Notepad, and Notepad++.",
+        help="The editor to open the project in. Supported: VS Code, PyCharm, IDLE, Notepad, and Notepad++.",
     )
     start.set_defaults(func=handle_start)
 
@@ -70,13 +71,11 @@ def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
 
 
 def handle_start(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
-    valid_path, _ = start_project.check_directory()
+    valid_path, _ = start_project.check_project(args.project_path)
     if valid_path:
         start_project.run(args)
     else:
-        cli.error(
-            "Couldn't find code files!\nAre you running this in the root of a programming project?"
-        )
+        cli.error("Couldn't find code files!")
 
 
 if __name__ == "__main__":
