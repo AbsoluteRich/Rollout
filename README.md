@@ -1,6 +1,6 @@
 # Rollout (WIP)
 
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![wakatime](https://wakatime.com/badge/user/018daccf-84a6-42a4-b6f7-339559cb10c8/project/018dc050-e1e3-42b5-ad16-de47afc6cad6.svg)](https://wakatime.com/badge/user/018daccf-84a6-42a4-b6f7-339559cb10c8/project/018dc050-e1e3-42b5-ad16-de47afc6cad6)
 > Rollout is your one-stop solution to bootstrap Python projects, including essentials like Git and a virtual environment.
