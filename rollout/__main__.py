@@ -56,7 +56,7 @@ def setup_cli() -> argparse.ArgumentParser:
 
 def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
     venv_name = None if args.venv_name == "None" else args.venv_name
-    if not args.venv_name and args.dependencies:
+    if not venv_name and args.dependencies:
         print(
             "Packages will be ignored, as there is no virtual environment to install them to."
         )
