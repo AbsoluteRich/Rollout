@@ -1,11 +1,18 @@
 # PyCharm bug?
 # noinspection PyPackageRequirements
-from jinja2 import Environment, FileSystemLoader
-
-# noinspection PyPackageRequirements
+from jinja2 import Environment
 from halo import Halo
-from commands import venv, pip_install, pip_freeze
+import commands
 from pathlib import Path
+
+# This can't be a separate file, because where would that be stored?
+TEMPLATE = """# Welcome to your new Python project!
+{% if dependencies is defined %}{% for dependency in dependencies %}import {{ dependency }}
+{% endfor %}{% endif %}
+if __name__ == "__main__":
+    pass
+
+"""
 
 
 def create_project_folders(project_name: str) -> bool:
@@ -19,8 +26,8 @@ def create_project_folders(project_name: str) -> bool:
 
 
 def create_entrypoint(project_name: str, packages: list) -> None:
-    jinja = Environment(loader=FileSystemLoader(Path.cwd()))
-    template = jinja.get_template("template.jinja2")
+    jinja = Environment()
+    template = jinja.from_string(TEMPLATE)
     if packages:
         template = template.render(dependencies=packages)
     else:
@@ -32,7 +39,7 @@ def create_entrypoint(project_name: str, packages: list) -> None:
 
 # https://github.com/manrajgrover/halo/issues/5
 def run(
-    project_name: str, venv_name: str, packages: list[str] | None = None
+        project_name: str, venv_name: str, packages: list[str] | None = None
 ) -> tuple[True, Path] | tuple[False, str]:
     project_path = Path(project_name)
 
@@ -49,7 +56,7 @@ def run(
 
     if venv_name:
         spinner = Halo("Setting up virtual environment...").start()
-        venv(project_path / venv_name)
+        commands.venv(project_path / venv_name)
         spinner.succeed(spinner.text + " Done!")
 
     if packages and venv_name:
@@ -58,12 +65,14 @@ def run(
         for package in packages:
             spinner = Halo(f"Installing {package} in {venv_name}...").start()
             with open(project_path / "pip-log.txt", "a") as f:
-                pip_install(pip_executable, package, stdout=f, stderr=f, text=True)
+                commands.pip_install(
+                    pip_executable, package, stdout=f, stderr=f, text=True
+                )
             spinner.succeed(spinner.text + " Done!")
 
         spinner = Halo("Creating requirements file...").start()
         with open(project_path / "requirements.txt", "w") as f:
-            pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
+            commands.pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
         spinner.succeed(spinner.text + " Done!")
 
     return True, Path.cwd() / project_name

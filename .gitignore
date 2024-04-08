@@ -1,10 +1,12 @@
-src/*
-!src/template.jinja2
-!src/commands.py
-!src/new_project.py
-!src/start_project.py
-!src/custom_types.py
-!src/initialise_git.py
+rollout/*
+!rollout/template.jinja2
+!rollout/commands.py
+!rollout/custom_types.py
+!rollout/__main__.py
+!rollout/__init__.py
+!rollout/initialise_git.py
+!rollout/new_project.py
+!rollout/start_project.py
 archives/
 
 # Byte-compiled / optimized / DLL files
