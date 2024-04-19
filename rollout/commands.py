@@ -1,6 +1,7 @@
-from subprocess import run, CompletedProcess
-from sys import executable as python_exe
 from pathlib import Path
+from subprocess import CompletedProcess, run
+from sys import executable as python_exe
+
 from custom_types import pathlike
 
 

@@ -1,4 +1,4 @@
-from pathlib import Path
 from os import PathLike
+from pathlib import Path
 
 pathlike = Path | str | PathLike

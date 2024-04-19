@@ -1,7 +1,8 @@
 import argparse
+
+import initialise_git
 import new_project
 import start_project
-import initialise_git
 
 
 def setup_cli() -> argparse.ArgumentParser:

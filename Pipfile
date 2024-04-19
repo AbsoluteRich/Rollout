@@ -14,6 +14,7 @@ termcolor = "~=2.4.0"
 
 [dev-packages]
 black = "*"
+isort = "*"
 
 [requires]
 python_version = "3.12"

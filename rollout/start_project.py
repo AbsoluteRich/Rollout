@@ -1,7 +1,8 @@
-import commands
-from pathlib import Path
 from argparse import Namespace
 from os.path import split
+from pathlib import Path
+
+import commands
 
 
 def check_project(path: Path) -> tuple[True, Path] | tuple[False, None]:
