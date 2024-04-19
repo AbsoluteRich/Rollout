@@ -1,5 +1,3 @@
-# PyCharm bug?
-# noinspection PyPackageRequirements
 from pathlib import Path
 
 import commands

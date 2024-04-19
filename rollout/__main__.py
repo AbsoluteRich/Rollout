@@ -1,5 +1,6 @@
 import argparse
 
+import common
 import initialise_git
 import new_project
 import start_project
@@ -47,8 +48,11 @@ def setup_cli() -> argparse.ArgumentParser:
         "git",
         help="Create a Git repository and initialises it with a gitignore and licence. Must have Git installed.",
     )
+    git.add_argument("project_path", help="Path to the project.")
     git.add_argument(
-        "licence", help="The licence to be added to the project. Default: GNU GPLv3"
+        "licence",
+        help="The licence to be added to the project. Default: GNU GPLv3",
+        default="GNU GPLv3",
     )
     start.set_defaults(func=handle_git)
 
@@ -71,7 +75,9 @@ def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
             print(
                 "If you don't need to see the output for the commands, you can delete 'pip-log.txt'."
             )
-        print(f"Maybe you'd like to open {args.project_name} using 'rollout start'?")
+        print(
+            f"Now that you've created {args.project_name}, you might like to set it up with Git by using 'rollout git' or begin coding using 'rollout start'."
+        )
     else:
         error_message = result[1]
         if args.dependencies:
@@ -82,7 +88,7 @@ def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
 
 
 def handle_start(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
-    valid_path, _ = start_project.check_project(args.project_path)
+    valid_path, _ = common.check_project(args.project_path)
     if valid_path:
         start_project.run(args)
     else:
@@ -90,7 +96,11 @@ def handle_start(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None
 
 
 def handle_git(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
-    initialise_git.run(args, cli)
+    valid_path, _ = common.check_project(args.project_path)
+    if valid_path:
+        initialise_git.run(args)
+    else:
+        cli.error("Couldn't find code files!")
 
 
 if __name__ == "__main__":

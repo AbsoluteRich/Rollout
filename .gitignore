@@ -1,12 +1,3 @@
-rollout/*
-!rollout/template.jinja2
-!rollout/commands.py
-!rollout/custom_types.py
-!rollout/__main__.py
-!rollout/__init__.py
-!rollout/initialise_git.py
-!rollout/new_project.py
-!rollout/start_project.py
 archives/
 
 # Byte-compiled / optimized / DLL files

@@ -11,6 +11,7 @@ log-symbols = "~=0.0.14"
 markupsafe = "~=2.1.5"
 spinners = "~=0.0.24"
 termcolor = "~=2.4.0"
+requests = "*"
 
 [dev-packages]
 black = "*"

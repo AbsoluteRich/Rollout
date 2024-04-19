@@ -2,9 +2,10 @@ from pathlib import Path
 from subprocess import CompletedProcess, run
 from sys import executable as python_exe
 
-from custom_types import pathlike
+from common import pathlike
 
 
+# new_project.py
 def venv(venv_name: pathlike, *args, **kwargs) -> CompletedProcess:
     return run([python_exe, "-m", "venv", venv_name], *args, **kwargs)
 
@@ -21,6 +22,7 @@ def pip_freeze(executable_path: pathlike, *args, **kwargs) -> CompletedProcess:
     return run(parameters, *args, **kwargs)
 
 
+# start_project.py
 def vsc(project_path: pathlike) -> CompletedProcess:
     return run(["code", project_path])
 
@@ -39,3 +41,12 @@ def notepad(file_path: Path) -> CompletedProcess:
 
 def notepadplusplus(file_path: Path) -> CompletedProcess:
     return run(["start", "notepad++", file_path])
+
+
+# initialise_git.py
+def git_init() -> CompletedProcess:
+    return run(["git", "init"])
+
+
+def git_commit(title: str, description: str) -> CompletedProcess:
+    return run(["git", "commit", "-a", "-m", title, "-m", description])
