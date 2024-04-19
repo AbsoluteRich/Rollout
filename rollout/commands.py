@@ -44,8 +44,8 @@ def notepadplusplus(file_path: Path) -> CompletedProcess:
 
 
 # initialise_git.py
-def git_init() -> CompletedProcess:
-    return run(["git", "init"])
+def git_init(project_path: pathlike = ".") -> CompletedProcess:
+    return run(["git", "init", project_path])
 
 
 def git_commit(title: str, description: str) -> CompletedProcess:

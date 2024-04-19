@@ -1,8 +1,10 @@
 import argparse
+from pathlib import Path
 
 import common
 import initialise_git
 import new_project
+import requests
 import start_project
 
 
@@ -50,11 +52,11 @@ def setup_cli() -> argparse.ArgumentParser:
     )
     git.add_argument("project_path", help="Path to the project.")
     git.add_argument(
-        "licence",
+        "--licence",
         help="The licence to be added to the project. Default: GNU GPLv3",
-        default="GNU GPLv3",
+        default="gpl-3.0",
     )
-    start.set_defaults(func=handle_git)
+    git.set_defaults(func=handle_git)
 
     return parser
 
@@ -97,10 +99,20 @@ def handle_start(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None
 
 def handle_git(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
     valid_path, _ = common.check_project(args.project_path)
-    if valid_path:
-        initialise_git.run(args)
-    else:
+    if not valid_path:
         cli.error("Couldn't find code files!")
+
+    all_licences = initialise_git.get_all_licences()
+    all_licences = [licence["key"] for licence in all_licences]
+    if args.licence not in all_licences:
+        error = "Invalid licence! Valid options are:"
+        for licence in all_licences:
+            error += f"\n- {licence}"
+        cli.error(error)
+
+    result = initialise_git.run(args.project_path, args.licence)
+    if not result[0]:
+        cli.error(result[1])
 
 
 if __name__ == "__main__":
