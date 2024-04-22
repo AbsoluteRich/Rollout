@@ -1,6 +1,5 @@
 from argparse import Namespace
 from os.path import split
-from pathlib import Path
 
 import commands
 import common

@@ -1,10 +1,8 @@
 import argparse
-from pathlib import Path
 
 import common
 import initialise_git
 import new_project
-import requests
 import start_project
 
 
@@ -34,6 +32,11 @@ def setup_cli() -> argparse.ArgumentParser:
         help="Packages to install in the virtual environment (if any).",
         nargs="+",
     )
+    new.add_argument(
+        "--spec",
+        help="The version specifier to be used in the requirements file. Default: '=='.",
+        default="==",
+    )
     new.set_defaults(func=handle_new)
 
     start = subparsers.add_parser(
@@ -62,13 +65,22 @@ def setup_cli() -> argparse.ArgumentParser:
 
 
 def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
+    if args.spec not in ["<", "<=", "!=", "==", ">=", ">", "~=", "==="]:
+        cli.error(
+            "Invalid version specifier!\nSee the Python docs for more "
+            "info.\nhttps://packaging.python.org/en/latest/specifications/dependency-specifiers/#grammar"
+        )
+
     venv_name = None if args.venv_name == "None" else args.venv_name
     if not venv_name and args.dependencies:
         print(
             "Packages will be ignored, as there is no virtual environment to install them to."
         )
     result = new_project.run(
-        args.project_name, packages=args.dependencies, venv_name=venv_name
+        args.project_name,
+        packages=args.dependencies,
+        venv_name=venv_name,
+        version_specifier=args.spec,
     )
 
     if result[0]:
@@ -78,7 +90,8 @@ def handle_new(args: argparse.Namespace, cli: argparse.ArgumentParser) -> None:
                 "If you don't need to see the output for the commands, you can delete 'pip-log.txt'."
             )
         print(
-            f"Now that you've created {args.project_name}, you might like to set it up with Git by using 'rollout git' or begin coding using 'rollout start'."
+            f"Now that you've created {args.project_name}, you might like to set it up with Git by using 'rollout "
+            f"git' or begin coding using 'rollout start'."
         )
     else:
         error_message = result[1]

@@ -37,8 +37,11 @@ def create_entrypoint(project_name: str, packages: list) -> None:
 
 
 # https://github.com/manrajgrover/halo/issues/5
-def run(
-    project_name: str, venv_name: str, packages: list[str] | None = None
+def run(  # None of these parameters should have default value, that's what the CLI is for
+    project_name: str,
+    venv_name: str,
+    packages: list[str] | None,
+    version_specifier: str,
 ) -> tuple[True, Path] | tuple[False, str]:
     project_path = Path(project_name)
 
@@ -69,9 +72,20 @@ def run(
                 )
             spinner.succeed(spinner.text + " Done!")
 
+        print(project_path / "requirements.txt")
         spinner = Halo("Creating requirements file...").start()
         with open(project_path / "requirements.txt", "w") as f:
             commands.pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
+
+        if version_specifier != "==":
+            with open(project_path / "requirements.txt", "r") as f:
+                contents = f.read()
+            print(contents)
+            contents = contents.replace("==", version_specifier)
+            print(contents)
+            with open(project_path / "requirements.txt", "w") as f:
+                f.write(contents)
+
         spinner.succeed(spinner.text + " Done!")
 
     return True, Path.cwd() / project_name
