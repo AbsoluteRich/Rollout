@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from rollout import __version__
 
@@ -8,7 +8,8 @@ setup(
     install_requires=[
         "Click",
     ],
-    packages=["rollout"],
+    packages=find_packages(),
+    include_package_data=True,
     entry_points={
         "console_scripts": [
             "rollout = rollout:cli",
