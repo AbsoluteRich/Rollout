@@ -36,7 +36,6 @@ def create_entrypoint(project_name: str, packages: list) -> None:
         f.write(template)
 
 
-# https://github.com/manrajgrover/halo/issues/5
 def run(  # None of these parameters should have default value, that's what the CLI is for
     project_name: str,
     venv_name: str,

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "56f084ab7d2d83d60f10f86a362f950f54dbf4f452a98ec7f0ca2a6881ae1fb5"
+            "sha256": "79fc942f021040ce1867abc75e59b4b84d7e24aab7228bb3b0beae5a893224d5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -137,6 +137,11 @@
             "markers": "platform_system == 'Windows'",
             "version": "==0.4.6"
         },
+        "halo": {
+            "git": "git+https://github.com/norweeg/halo.git",
+            "markers": "python_version >= '3.4'",
+            "ref": "abbfbc450bb4126262775d591486998e73b012df"
+        },
         "idna": {
             "hashes": [
                 "sha256:028ff3aadf0609c1fd278d8ea3089299412a7a8b9bd005dd08b9f8285bcb5cfc",
@@ -144,6 +149,13 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==3.7"
+        },
+        "log-symbols": {
+            "hashes": [
+                "sha256:4952106ff8b605ab7d5081dd2c7e6ca7374584eff7086f499c06edd1ce56dcca",
+                "sha256:cf0bbc6fe1a8e53f0d174a716bc625c4f87043cc21eb55dd8a740cfe22680556"
+            ],
+            "version": "==0.0.14"
         },
         "requests": {
             "hashes": [
@@ -162,6 +174,29 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==69.5.1"
+        },
+        "six": {
+            "hashes": [
+                "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
+                "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==1.16.0"
+        },
+        "spinners": {
+            "hashes": [
+                "sha256:1eb6aeb4781d72ab42ed8a01dcf20f3002bf50740d7154d12fb8c9769bf9e27f",
+                "sha256:2fa30d0b72c9650ad12bbe031c9943b8d441e41b4f5602b0ec977a19f3290e98"
+            ],
+            "version": "==0.0.24"
+        },
+        "termcolor": {
+            "hashes": [
+                "sha256:9297c0df9c99445c2412e832e882a7884038a25617c60cea2ad69488d4040d63",
+                "sha256:aab9e56047c8ac41ed798fa36d892a37aca6b3e9159f3e0c24bc64a9b3ac7b7a"
+            ],
+            "markers": "python_version >= '3.8'",
+            "version": "==2.4.0"
         },
         "urllib3": {
             "hashes": [

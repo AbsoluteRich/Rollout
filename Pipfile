@@ -7,6 +7,7 @@ name = "pypi"
 click = "*"
 setuptools = "*"
 requests = "*"
+halo = {ref = "remove-terminal-check", git = "git+https://github.com/norweeg/halo.git"}
 
 [dev-packages]
 black = "*"
