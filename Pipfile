@@ -8,6 +8,7 @@ click = "*"
 setuptools = "*"
 requests = "*"
 halo = {ref = "remove-terminal-check", git = "git+https://github.com/norweeg/halo.git"}
+jinja2 = "*"
 
 [dev-packages]
 black = "*"

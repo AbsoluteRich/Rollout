@@ -44,47 +44,49 @@ def run(  # None of these parameters should have default value, that's what the 
 ) -> tuple[True, Path] | tuple[False, str]:
     project_path = Path(project_name)
 
-    spinner = Halo("Creating project folders...").start()
-    success = create_project_folders(project_name)
-    if not success:
-        spinner.fail(spinner.text)
-        return False, "Folder already exists. Try renaming or deleting it."
-    spinner.succeed(spinner.text + " Done!")
+    with Halo("Creating project folders...", spinner="dots").start() as spin:
+        success = create_project_folders(project_name)
+        if not success:
+            spin.fail(spin.text)
+            return False, "Folder already exists. Try renaming or deleting it."
+        spin.succeed(spin.text + " Done!")
 
-    spinner = Halo("Creating entrypoint...").start()
-    create_entrypoint(project_name, packages)
-    spinner.succeed(spinner.text + " Done!")
+    with Halo("Creating entrypoint...").start() as spin:
+        create_entrypoint(project_name, packages)
+        spin.succeed(spin.text + " Done!")
 
     if venv_name:
-        spinner = Halo("Setting up virtual environment...").start()
-        commands.venv(project_path / venv_name)
-        spinner.succeed(spinner.text + " Done!")
+        with Halo("Setting up virtual environment...", spinner="dots").start() as spin:
+            commands.venv(project_path / venv_name)
+            spin.succeed(spin.text + " Done!")
 
     if packages and venv_name:
         pip_executable = project_path / venv_name / "Scripts" / "pip.exe"
 
         for package in packages:
-            spinner = Halo(f"Installing {package} in {venv_name}...").start()
-            with open(project_path / "pip-log.txt", "a") as f:
-                commands.pip_install(
-                    pip_executable, package, stdout=f, stderr=f, text=True
-                )
-            spinner.succeed(spinner.text + " Done!")
+            with Halo(
+                f"Installing {package} in {venv_name}...", spinner="dots"
+            ).start() as spin:
+                with open(project_path / "pip-log.txt", "a") as f:
+                    commands.pip_install(
+                        pip_executable, package, stdout=f, stderr=f, text=True
+                    )
+                spin.succeed(spin.text + " Done!")
 
         print(project_path / "requirements.txt")
-        spinner = Halo("Creating requirements file...").start()
-        with open(project_path / "requirements.txt", "w") as f:
-            commands.pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
-
-        if version_specifier != "==":
-            with open(project_path / "requirements.txt", "r") as f:
-                contents = f.read()
-            print(contents)
-            contents = contents.replace("==", version_specifier)
-            print(contents)
+        with Halo("Creating requirements file...", spinner="dots").start() as spin:
             with open(project_path / "requirements.txt", "w") as f:
-                f.write(contents)
+                commands.pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
 
-        spinner.succeed(spinner.text + " Done!")
+            if version_specifier != "==":
+                with open(project_path / "requirements.txt", "r") as f:
+                    contents = f.read()
+                print(contents)
+                contents = contents.replace("==", version_specifier)
+                print(contents)
+                with open(project_path / "requirements.txt", "w") as f:
+                    f.write(contents)
+
+            spin.succeed(spin.text + " Done!")
 
     return True, Path.cwd() / project_name
