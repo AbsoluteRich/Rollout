@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 click = "*"
-setuptools = "*"
 requests = "*"
 halo = {ref = "remove-terminal-check", git = "git+https://github.com/norweeg/halo.git"}
 jinja2 = "*"
@@ -13,6 +12,7 @@ jinja2 = "*"
 [dev-packages]
 black = "*"
 isort = "*"
+flit = "*"
 
 [requires]
 python_version = "3.12"

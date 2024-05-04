@@ -1,0 +1,17 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "rollout"
+authors = [{name = "AbsoluteRich"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+	"License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)", 
+	"Private :: Do Not Upload"  # So I don't accidentally publish this
+]
+dynamic = ["version", "description"]
+
+[project.urls]
+homepage = "https://github.com/AbsoluteRich/Rollout"
