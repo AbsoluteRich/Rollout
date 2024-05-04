@@ -17,54 +17,55 @@ Rollout was made to learn more about CLIs and how to make them using Python. If 
 
 ## Install
 
-Ensure that you have [Python](https://www.python.org/downloads/) 3.7 or above.
+> [!CAUTION]
+> This is still a work in progress. Use at your own risk!
+
+Ensure that you have [Python](https://www.python.org/downloads/) 3.10 or above.
+
+<!--### From source>
+```shell
+git clone https://github.com/AbsoluteRich/Rollout.git  # Or, if you have GitHub Desktop, clone the repository through that
+pipenv install
+# If you don't have pipenv:
+python -m venv .venv
+.venv/Scripts/Activate.ps1
+pip install -r requirements.txt
+```
 
 <!--
-### Production
-
-Installation through [`pipx`](https://pipx.pypa.io/stable/) is recommended.
-
-Todo: Get pipx working
-
-Install it with the following command if you don't already have it...
-
-```sh
-pip install pipx
-```
-
-...then you can install the tool.
-
-```sh
+### pipx (recommended)
+```shell
+pip install pipx  # If you don't already have it
 pipx install rollout
 ```
-
-Now you can use the tool to your heart's desire.
-
-Todo: Conflicts with the usage section
-
-```sh
-rollout my-new-project -d numpy pandas matplotlib
-```
-
-### Development
-
-See the [Contributing](#contributing) section for guidelines on contributing.
-
-After cloning the repository through Git or GitHub Desktop, you can use the program with the following commands:
-
-```sh
-cd src  # If your working directory isn't already in src
-python main.py my-new-project -d numpy pandas matplotlib
-```
-
+-->
 ## Usage
 
+```shell
+pipenv run python rollout my-new-project -d numpy pandas matplotlib 
+
+# If you didn't install with pipenv:
+.venv/Scripts/Activate.ps1
+python rollout my-new-project -d numpy pandas matplotlib 
+```
+
+<!--
 ```sh
 rollout my-new-project -d numpy pandas matplotlib
 ```
+-->
 
 ## Contributing
--->
+
+```shell
+git clone https://github.com/AbsoluteRich/Rollout.git  # Or, if you have GitHub Desktop, clone the repository through that
+pipenv install -d  # If you have pipenv installed. If not...
+
+python -m venv .venv
+.venv/Scripts/Activate.ps1
+pip install -r requirements-dev.txt
+```
+
 ## Licence
 
 This project is licenced under [GPL-3.0](https://github.com/AbsoluteRich/rollout/tree/main/LICENSE).
