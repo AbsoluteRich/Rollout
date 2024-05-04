@@ -2,7 +2,7 @@ from pathlib import Path
 from subprocess import CompletedProcess, run
 from sys import executable as python_exe
 
-from common import pathlike
+from .common import pathlike
 
 
 # new_project.py

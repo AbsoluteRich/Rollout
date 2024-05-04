@@ -1,7 +1,8 @@
 from typing import final
 
 import click
-from initialise_git import get_all_licences
+
+from .initialise_git import get_all_licences
 
 # https://stackoverflow.com/questions/59733806/python-click-group-how-to-have-h-help-for-all-commands
 CONTEXT_SETTINGS: final = dict(help_option_names=["-h", "--help"])
@@ -51,8 +52,10 @@ def new(*args, **kwargs) -> None:
 )
 @click.argument("project_path")
 @click.argument("editor")
-def start() -> None:
+def start(*args, **kwargs) -> None:
     click.echo("Second command")
+    click.echo(args)
+    click.echo(kwargs)
 
 
 @cli.command(
@@ -66,8 +69,10 @@ def start() -> None:
     default="gpl-3.0",
     show_default=True,
 )
-def git() -> None:
+def git(*args, **kwargs) -> None:
     click.echo("Third command")
+    click.echo(args)
+    click.echo(kwargs)
 
 
 if __name__ == "__main__":

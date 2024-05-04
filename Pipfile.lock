@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "19dedc79620831e9cd8aeb95cc56c4a75e14062d1c027ea2a7afcfa62e8c96c3"
+            "sha256": "57d6e85c43caf59320cb762d0f35c4960e464d5a81b63ed287b5a99fe6061ae8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -134,7 +134,7 @@
                 "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44",
                 "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
             ],
-            "markers": "platform_system == 'Windows'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6'",
             "version": "==0.4.6"
         },
         "halo": {
@@ -421,7 +421,7 @@
                 "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44",
                 "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
             ],
-            "markers": "platform_system == 'Windows'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5, 3.6'",
             "version": "==0.4.6"
         },
         "docutils": {
@@ -456,6 +456,15 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==3.7"
+        },
+        "invoke": {
+            "hashes": [
+                "sha256:6ea924cc53d4f78e3d98bc436b08069a03077e6f85ad1ddaa8a116d7dad15820",
+                "sha256:ee6cbb101af1a859c7fe84f2a264c059020b0cb7fe3535f9424300ab568f6bd5"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.6'",
+            "version": "==2.2.0"
         },
         "isort": {
             "hashes": [

@@ -13,6 +13,10 @@ jinja2 = "*"
 black = "*"
 isort = "*"
 flit = "*"
+invoke = "*"
 
 [requires]
 python_version = "3.12"
+
+[scripts]
+pre-commit = "invoke pc"

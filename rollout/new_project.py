@@ -1,8 +1,9 @@
 from pathlib import Path
 
-import commands
 from halo import Halo
 from jinja2 import Environment
+
+from . import commands
 
 # This can't be a separate file, because where would that be stored?
 TEMPLATE = """# Welcome to your new Python project!

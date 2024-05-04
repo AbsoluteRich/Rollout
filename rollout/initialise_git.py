@@ -1,8 +1,9 @@
 from pathlib import Path
 
-import commands
 import requests
 from halo import Halo
+
+from . import commands
 
 
 def get_gitignore(language: str) -> str:
