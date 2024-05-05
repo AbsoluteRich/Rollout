@@ -2,7 +2,7 @@ from typing import final
 
 import click
 
-from .initialise_git import get_all_licences
+from rollout.initialise_git import get_all_licences
 
 # https://stackoverflow.com/questions/59733806/python-click-group-how-to-have-h-help-for-all-commands
 CONTEXT_SETTINGS: final = dict(help_option_names=["-h", "--help"])
@@ -11,7 +11,7 @@ all_licences = get_all_licences()
 all_licences = [licence["key"] for licence in all_licences]
 
 
-@click.group()
+@click.group(context_settings=CONTEXT_SETTINGS)
 @click.help_option("--help", "-h")
 def cli():
     """
@@ -68,6 +68,13 @@ def start(*args, **kwargs) -> None:
     type=click.Choice(all_licences),
     default="gpl-3.0",
     show_default=True,
+)
+@click.option(
+    "--desktop",
+    help="If specified, opens the project in GitHub Desktop instead of directly using Git. If specified, licence is ignored (because you set that up in the program).",
+    is_flag=True,
+    default=False,
+    show_default=False,
 )
 def git(*args, **kwargs) -> None:
     click.echo("Third command")

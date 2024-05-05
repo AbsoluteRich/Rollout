@@ -1,7 +1,7 @@
 from argparse import Namespace
 from os.path import split
 
-from . import commands, common
+from rollout import commands, common
 
 
 def run(args: Namespace) -> None:
