@@ -1,7 +1,9 @@
+from platform import python_version
 from typing import final
 
 import click
 
+from rollout.__init__ import __version__
 from rollout.initialise_git import get_all_licences
 
 # https://stackoverflow.com/questions/59733806/python-click-group-how-to-have-h-help-for-all-commands
@@ -13,6 +15,10 @@ all_licences = [licence["key"] for licence in all_licences]
 
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.help_option("--help", "-h")
+@click.version_option(
+    __version__,
+    message=f"%(prog)s v%(version)s, running via Python v{python_version()} and click v{click.__version__}",
+)
 def cli():
     """
     Your one-stop solution to bootstrap Python projects, including essentials like Git and a virtual environment.
