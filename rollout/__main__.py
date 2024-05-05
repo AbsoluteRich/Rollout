@@ -1,10 +1,13 @@
+from pathlib import Path
 from platform import python_version
 from typing import final
 
 import click
-
-from rollout.__init__ import __version__
-from rollout.initialise_git import get_all_licences
+import commands
+import new_project
+from __init__ import __version__
+from halo import Halo
+from initialise_git import get_all_licences
 
 # https://stackoverflow.com/questions/59733806/python-click-group-how-to-have-h-help-for-all-commands
 CONTEXT_SETTINGS: final = dict(help_option_names=["-h", "--help"])
@@ -36,6 +39,7 @@ def cli():
 )
 @click.option(
     "--spec",
+    "version_specifier",
     help="The version specifier to be used in the requirements file.",
     type=click.Choice(["<", "<=", "!=", "==", ">=", ">", "~=", "==="]),
     default="==",
@@ -44,13 +48,80 @@ def cli():
 @click.option(
     "--dependencies",
     "-d",
+    "packages",
     help="Packages to install in the virtual environment (if any).",
     multiple=True,
 )
-def new(*args, **kwargs) -> None:
-    click.echo("Hello world!")
-    click.echo(args)
-    click.echo(kwargs)
+def new(
+    project_name: str,
+    venv_name: str,
+    packages: list[str] | None,
+    version_specifier: str,
+) -> None:
+    project_path = Path(project_name)
+    venv_name = None if venv_name == "None" else venv_name
+    if (not venv_name) and packages:
+        click.echo(
+            "Packages will be ignored, as there is no virtual environment to install them to."
+        )
+
+    with Halo("Creating project folders...", spinner="dots").start() as spin:
+        success = new_project.create_project_folders(project_name)
+        if success:
+            spin.succeed(spin.text + " Done!")
+        else:
+            spin.fail(
+                spin.text + " Folder already exists. Try renaming or deleting it."
+            )
+            return
+
+    with Halo("Creating entrypoint...").start() as spin:
+        new_project.create_entrypoint(project_name, packages)
+        spin.succeed(spin.text + " Done!")
+
+    if venv_name:
+        with Halo("Setting up virtual environment...", spinner="dots").start() as spin:
+            commands.venv(project_path / venv_name)
+            spin.succeed(spin.text + " Done!")
+
+    if packages and venv_name:
+        pip_executable = project_path / venv_name / "Scripts" / "pip.exe"
+
+        for package in packages:
+            with Halo(
+                f"Installing {package} in {venv_name}...", spinner="dots"
+            ).start() as spin:
+                with open(project_path / "pip-log.txt", "a") as f:
+                    commands.pip_install(
+                        pip_executable, package, stdout=f, stderr=f, text=True
+                    )
+                spin.succeed(spin.text + " Done!")
+
+        print(project_path / "requirements.txt")
+        with Halo("Creating requirements file...", spinner="dots").start() as spin:
+            with open(project_path / "requirements.txt", "w") as f:
+                commands.pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
+
+            if version_specifier != "==":
+                with open(project_path / "requirements.txt", "r") as f:
+                    contents = f.read()
+                print(contents)
+                contents = contents.replace("==", version_specifier)
+                print(contents)
+                with open(project_path / "requirements.txt", "w") as f:
+                    f.write(contents)
+
+            spin.succeed(spin.text + " Done!")
+
+    click.echo(f"Your new project can be found at {Path.cwd() / project_name}")
+    if packages:
+        click.echo(
+            "If you don't need to see the output for the commands, you can delete 'pip-log.txt'."
+        )
+    click.echo(
+        f"Now that you've created {project_name}, you might like to set it up with Git by using 'rollout git' or "
+        f"begin coding using 'rollout start'."
+    )
 
 
 @cli.command(
@@ -77,7 +148,8 @@ def start(*args, **kwargs) -> None:
 )
 @click.option(
     "--desktop",
-    help="If specified, opens the project in GitHub Desktop instead of directly using Git. If specified, licence is ignored (because you set that up in the program).",
+    help="If specified, opens the project in GitHub Desktop instead of directly using Git. If specified, licence is "
+    "ignored (because you set that up in the program).",
     is_flag=True,
     default=False,
     show_default=False,
