@@ -2,7 +2,7 @@ from pathlib import Path
 from subprocess import CompletedProcess, run
 from sys import executable as python_exe
 
-from common import pathlike
+from rollout.common import pathlike
 
 
 # new_project.py
@@ -50,3 +50,7 @@ def git_init(project_path: pathlike = ".") -> CompletedProcess:
 
 def git_commit(title: str, description: str) -> CompletedProcess:
     return run(["git", "commit", "-a", "-m", title, "-m", description])
+
+
+def github_desktop(project_path: pathlike) -> CompletedProcess:
+    return run(["github", project_path])

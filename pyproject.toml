@@ -1,0 +1,24 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "rollout"
+description="Rollout is your one-stop solution to bootstrap Python projects, including essentials like Git and a virtual environment."
+readme = "README.md"
+requires-python="~=3.12"  # Copied from Pipfile
+license = {file = "LICENSE"}
+authors = [{name = "AbsoluteRich"}]
+classifiers = [
+	"Environment :: Console",
+	"Intended Audience :: Developers",
+	"License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)", 
+	"Operating System :: Microsoft :: Windows",
+	"Programming Language :: Python :: 3",
+	"Topic :: Software Development :: Code Generators",
+	"Private :: Do Not Upload"  # So I don't accidentally publish this
+]
+dynamic = ["version"]
+
+[project.urls]
+homepage = "https://github.com/AbsoluteRich/Rollout"
