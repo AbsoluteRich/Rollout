@@ -1,9 +1,4 @@
-from pathlib import Path
-
 import requests
-from halo import Halo
-
-from rollout import commands
 
 
 def get_gitignore(language: str) -> str:

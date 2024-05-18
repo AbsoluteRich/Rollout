@@ -97,7 +97,6 @@ def new(
                     )
                 spin.succeed(spin.text + " Done!")
 
-        print(project_path / "requirements.txt")
         with Halo("Creating requirements file...", spinner="dots").start() as spin:
             with open(project_path / "requirements.txt", "w") as f:
                 commands.pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
@@ -105,9 +104,9 @@ def new(
             if version_specifier != "==":
                 with open(project_path / "requirements.txt", "r") as f:
                     contents = f.read()
-                print(contents)
+
                 contents = contents.replace("==", version_specifier)
-                print(contents)
+
                 with open(project_path / "requirements.txt", "w") as f:
                     f.write(contents)
 
@@ -195,6 +194,8 @@ def git(project_path: str, licence: str, desktop: bool) -> None:
                 with open(project_path / "LICENSE", "w") as f:
                     f.write(initialise_git.get_licence(licence))
                 spin.succeed(spin.text + " Done!")
+    else:
+        click.echo("Invalid project path!")
 
 
 if __name__ == "__main__":
