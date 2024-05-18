@@ -50,3 +50,7 @@ def git_init(project_path: pathlike = ".") -> CompletedProcess:
 
 def git_commit(title: str, description: str) -> CompletedProcess:
     return run(["git", "commit", "-a", "-m", title, "-m", description])
+
+
+def github_desktop(project_path: pathlike) -> CompletedProcess:
+    return run(["github", project_path])

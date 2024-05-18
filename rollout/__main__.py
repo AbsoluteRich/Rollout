@@ -6,14 +6,13 @@ from typing import final
 import click
 from halo import Halo
 
-from rollout import commands, common, new_project
+from rollout import commands, common, initialise_git, new_project
 from rollout.__init__ import __version__
-from rollout.initialise_git import get_all_licences
 
 # https://stackoverflow.com/questions/59733806/python-click-group-how-to-have-h-help-for-all-commands
 CONTEXT_SETTINGS: final = dict(help_option_names=["-h", "--help"])
 
-all_licences = get_all_licences()
+all_licences = initialise_git.get_all_licences()
 all_licences = [licence["key"] for licence in all_licences]
 
 
@@ -76,7 +75,7 @@ def new(
             )
             return
 
-    with Halo("Creating entrypoint...").start() as spin:
+    with Halo("Creating entrypoint...", spinner="dots").start() as spin:
         new_project.create_entrypoint(project_name, packages)
         spin.succeed(spin.text + " Done!")
 
@@ -154,6 +153,8 @@ def start(project_path: str, editor: str) -> None:
             case "notepad++":
                 # Todo
                 commands.notepadplusplus(file_path)
+    else:
+        click.echo("Invalid project path!")
 
 
 @cli.command(
@@ -175,10 +176,25 @@ def start(project_path: str, editor: str) -> None:
     default=False,
     show_default=False,
 )
-def git(*args, **kwargs) -> None:
-    click.echo("Third command")
-    click.echo(args)
-    click.echo(kwargs)
+def git(project_path: str, licence: str, desktop: bool) -> None:
+    is_project, _ = common.check_project(project_path)
+
+    if is_project:
+        if desktop:
+            commands.github_desktop(project_path)
+        else:
+            project_path = Path(project_path)
+            commands.git_init(project_path)
+
+            with Halo("Creating gitignore...", spinner="dots").start() as spin:
+                with open(project_path / ".gitignore", "w") as f:
+                    f.write(initialise_git.get_gitignore("Python"))
+                spin.succeed(spin.text + " Done!")
+
+            with Halo("Creating licence...", spinner="dots").start() as spin:
+                with open(project_path / "LICENSE", "w") as f:
+                    f.write(initialise_git.get_licence(licence))
+                spin.succeed(spin.text + " Done!")
 
 
 if __name__ == "__main__":
