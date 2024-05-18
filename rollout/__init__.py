@@ -1,3 +1,3 @@
-from rollout import commands, common, initialise_git, new_project, start_project
+from rollout import commands, common, initialise_git, new_project
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"

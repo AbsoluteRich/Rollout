@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from platform import python_version
 from typing import final
@@ -5,7 +6,7 @@ from typing import final
 import click
 from halo import Halo
 
-from rollout import commands, new_project
+from rollout import commands, common, new_project
 from rollout.__init__ import __version__
 from rollout.initialise_git import get_all_licences
 
@@ -129,10 +130,30 @@ def new(
 )
 @click.argument("project_path")
 @click.argument("editor")
-def start(*args, **kwargs) -> None:
-    click.echo("Second command")
-    click.echo(args)
-    click.echo(kwargs)
+def start(project_path: str, editor: str) -> None:
+    is_project, file_path = common.check_project(project_path)
+
+    if is_project:
+        project_path = os.path.split(file_path)[0]
+
+        match editor:
+            case "vsc":
+                # Todo
+                commands.vsc(project_path)
+
+            case "pycharm":
+                # Todo
+                commands.pycharm(project_path)
+
+            case "idle":
+                commands.idle(file_path)
+
+            case "notepad":
+                commands.notepad(file_path)
+
+            case "notepad++":
+                # Todo
+                commands.notepadplusplus(file_path)
 
 
 @cli.command(
