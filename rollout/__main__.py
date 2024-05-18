@@ -3,11 +3,11 @@ from platform import python_version
 from typing import final
 
 import click
-import commands
-import new_project
-from __init__ import __version__
 from halo import Halo
-from initialise_git import get_all_licences
+
+from rollout import commands, new_project
+from rollout.__init__ import __version__
+from rollout.initialise_git import get_all_licences
 
 # https://stackoverflow.com/questions/59733806/python-click-group-how-to-have-h-help-for-all-commands
 CONTEXT_SETTINGS: final = dict(help_option_names=["-h", "--help"])
