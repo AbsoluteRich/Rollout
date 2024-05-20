@@ -52,11 +52,20 @@ def cli():
     help="Packages to install in the virtual environment (if any).",
     multiple=True,
 )
+@click.option(
+    "--no-import",
+    "do_not_import",
+    help="Do not automatically import packages. Useful if the package's name in PyPI differs from the name you use in code.",
+    is_flag=True,
+    default=False,
+    show_default=False,
+)
 def new(
     project_name: str,
     venv_name: str,
     packages: list[str] | None,
     version_specifier: str,
+    do_not_import: bool,
 ) -> None:
     project_path = Path(project_name)
     venv_name = None if venv_name == "None" else venv_name
@@ -76,7 +85,7 @@ def new(
             return
 
     with Halo("Creating entrypoint...", spinner="dots").start() as spin:
-        new_project.create_entrypoint(project_name, packages)
+        new_project.create_entrypoint(project_name, packages, do_not_import)
         spin.succeed(spin.text + " Done!")
 
     if venv_name:

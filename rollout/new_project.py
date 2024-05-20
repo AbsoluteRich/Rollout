@@ -11,6 +11,12 @@ if __name__ == "__main__":
 
 """
 
+TEMPLATE_WITHOUT_IMPORTS = ""
+for line in enumerate(TEMPLATE.splitlines()):
+    line_number, line_content = line
+    if line_number not in [1, 2]:
+        TEMPLATE_WITHOUT_IMPORTS += line_content + "\n"
+
 
 def create_project_folders(project_name: str) -> bool:
     project_path = Path(project_name)
@@ -22,9 +28,14 @@ def create_project_folders(project_name: str) -> bool:
     return True
 
 
-def create_entrypoint(project_name: str, packages: list) -> None:
+def create_entrypoint(project_name: str, packages: list, do_not_import: bool) -> None:
     jinja = Environment()
-    template = jinja.from_string(TEMPLATE)
+
+    if do_not_import:
+        template = jinja.from_string(TEMPLATE_WITHOUT_IMPORTS)
+    else:
+        template = jinja.from_string(TEMPLATE)
+
     if packages:
         template = template.render(dependencies=packages)
     else:
