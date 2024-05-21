@@ -19,5 +19,7 @@ invoke = "*"
 python_version = "3.12"
 
 [scripts]
-pre-commit = "invoke pc"
+pre-commit = "invoke pre-commit"
 bump = "invoke bump"
+format = "invoke reformat"
+update = "invoke update-dependencies"
