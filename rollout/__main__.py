@@ -1,12 +1,15 @@
 import os
+import subprocess
 from pathlib import Path
 from platform import python_version
+from subprocess import run
+from sys import executable as python_exe
 from typing import final
 
 import click
 from halo import Halo
 
-from rollout import commands, common, initialise_git, new_project
+from rollout import common, initialise_git, new_project
 from rollout.__init__ import __version__
 
 # https://stackoverflow.com/questions/59733806/python-click-group-how-to-have-h-help-for-all-commands
@@ -38,11 +41,10 @@ def cli():
     show_default=True,
 )
 @click.option(
-    "--spec",
-    "version_specifier",
-    help="The version specifier to be used in the requirements file.",
-    type=click.Choice(["<", "<=", "!=", "==", ">=", ">", "~=", "==="]),
-    default="==",
+    "--venv-backend",
+    help="What to use to create virtual environments.",
+    type=click.Choice(["venv", "virtualenv", "pipenv"]),
+    default="venv",
     show_default=True,
 )
 @click.option(
@@ -53,9 +55,18 @@ def cli():
     multiple=True,
 )
 @click.option(
+    "--spec",
+    "version_specifier",
+    help="The version specifier to be used in the requirements file.",
+    type=click.Choice(["<", "<=", "!=", "==", ">=", ">", "~=", "==="]),
+    default="==",
+    show_default=True,
+)
+@click.option(
     "--no-import",
     "do_not_import",
-    help="Do not automatically import packages. Useful if the package's name in PyPI differs from the name you use in code.",
+    help="Don't automatically import packages. Useful if the package's name in PyPI differs from the name you use in "
+    "code.",
     is_flag=True,
     default=False,
     show_default=False,
@@ -66,6 +77,7 @@ def new(
     packages: list[str] | None,
     version_specifier: str,
     do_not_import: bool,
+    venv_backend: str,
 ) -> None:
     project_path = Path(project_name)
     venv_name = None if venv_name == "None" else venv_name
@@ -90,7 +102,31 @@ def new(
 
     if venv_name:
         with Halo("Setting up virtual environment...", spinner="dots").start() as spin:
-            commands.venv(project_path / venv_name)
+            match venv_backend:
+                case "venv":
+                    run([python_exe, "-m", "venv", project_path / venv_name])
+                case "virtualenv":
+                    # pip-log is the best name, since that gets caught in Python's gitignore
+                    with open(project_path / "pip-log.txt", "w") as f:
+                        run(
+                            # HACK: This necessitates the user install virtualenv through pipx
+                            ["virtualenv", project_path / venv_name],
+                            # [python_exe, "-m", "virtualenv", project_path / venv_name],
+                            stdout=f,
+                            stderr=f,
+                        )
+
+                case "pipenv":
+                    with open(project_path / "pip-log.txt", "w") as f:
+                        # BUG: For some reason, this makes the spinner print out every individual found
+                        run(["pipenv", "install"], stdout=f, stderr=f, cwd=project_path)
+                    venv_name = run(
+                        ["pipenv", "--venv"],
+                        stdout=subprocess.PIPE,
+                        text=True,
+                        cwd=project_path,
+                    ).stdout
+                    venv_name = Path(venv_name).name
             spin.succeed(spin.text + " Done!")
 
     if packages and venv_name:
@@ -101,25 +137,38 @@ def new(
                 f"Installing {package} in {venv_name}...", spinner="dots"
             ).start() as spin:
                 with open(project_path / "pip-log.txt", "a") as f:
-                    commands.pip_install(
-                        pip_executable, package, stdout=f, stderr=f, text=True
-                    )
+                    if venv_backend == "pipenv":
+                        run(
+                            ["pipenv", "install", package],
+                            stdout=f,
+                            stderr=f,
+                            text=True,
+                            cwd=project_path,
+                        )
+                    else:
+                        run(
+                            [pip_executable, "install", package],
+                            stdout=f,
+                            stderr=f,
+                            text=True,
+                        )
                 spin.succeed(spin.text + " Done!")
 
-        with Halo("Creating requirements file...", spinner="dots").start() as spin:
-            with open(project_path / "requirements.txt", "w") as f:
-                commands.pip_freeze(pip_executable, stdout=f, stderr=f, text=True)
-
-            if version_specifier != "==":
-                with open(project_path / "requirements.txt", "r") as f:
-                    contents = f.read()
-
-                contents = contents.replace("==", version_specifier)
-
+        if venv_backend != "pipenv":
+            with Halo("Creating requirements file...", spinner="dots").start() as spin:
                 with open(project_path / "requirements.txt", "w") as f:
-                    f.write(contents)
+                    run([pip_executable, "freeze"], stdout=f, stderr=f, text=True)
 
-            spin.succeed(spin.text + " Done!")
+                if version_specifier != "==":
+                    with open(project_path / "requirements.txt", "r") as f:
+                        contents = f.read()
+
+                    contents = contents.replace("==", version_specifier)
+
+                    with open(project_path / "requirements.txt", "w") as f:
+                        f.write(contents)
+
+                spin.succeed(spin.text + " Done!")
 
     click.echo(f"Your new project can be found at {Path.cwd() / project_name}")
     if packages:
@@ -145,22 +194,22 @@ def start(project_path: str, editor: str) -> None:
 
         match editor:
             case "vsc":
-                # Todo
-                commands.vsc(project_path)
+                # BUG: Why doesn't this work?
+                run(["code"], project_path)
 
             case "pycharm":
-                # Todo
-                commands.pycharm(project_path)
+                # BUG: Why doesn't this work?
+                run(["pycharm"], project_path)
 
             case "idle":
-                commands.idle(file_path)
+                run([python_exe, "-m" "idlelib", file_path])
 
             case "notepad":
-                commands.notepad(file_path)
+                run(["notepad", file_path])
 
             case "notepad++":
-                # Todo
-                commands.notepadplusplus(file_path)
+                # BUG: Why doesn't this work?
+                run(["start", "notepad++", file_path])
     else:
         click.echo("Invalid project path!")
 
@@ -189,10 +238,10 @@ def git(project_path: str, licence: str, desktop: bool) -> None:
 
     if is_project:
         if desktop:
-            commands.github_desktop(project_path)
+            run(["github", project_path])
         else:
             project_path = Path(project_path)
-            commands.git_init(project_path)
+            run(["git", "init", project_path])
 
             with Halo("Creating gitignore...", spinner="dots").start() as spin:
                 with open(project_path / ".gitignore", "w") as f:
@@ -203,6 +252,18 @@ def git(project_path: str, licence: str, desktop: bool) -> None:
                 with open(project_path / "LICENSE", "w") as f:
                     f.write(initialise_git.get_licence(licence))
                 spin.succeed(spin.text + " Done!")
+
+            run(
+                [
+                    "git",
+                    "commit",
+                    "-a",
+                    "-m",
+                    "Git boilerplate",
+                    "-m",
+                    f"Committed by rollout {__version__}",
+                ]
+            )
     else:
         click.echo("Invalid project path!")
 

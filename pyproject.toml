@@ -21,4 +21,4 @@ classifiers = [
 dynamic = ["version"]
 
 [project.urls]
-homepage = "https://github.com/AbsoluteRich/Rollout"
+Source = "https://github.com/AbsoluteRich/Rollout"
