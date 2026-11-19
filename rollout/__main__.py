@@ -1,10 +1,11 @@
+from importlib.metadata import version
 import os
 import subprocess
 from pathlib import Path
 from platform import python_version
 from subprocess import run
 from sys import executable as python_exe
-from typing import final
+from typing import Final
 
 import click
 from halo import Halo
@@ -13,7 +14,7 @@ from rollout import common, initialise_git, new_project
 from rollout.__init__ import __version__
 
 # https://stackoverflow.com/questions/59733806/python-click-group-how-to-have-h-help-for-all-commands
-CONTEXT_SETTINGS: final = dict(help_option_names=["-h", "--help"])
+CONTEXT_SETTINGS: Final = dict(help_option_names=["-h", "--help"])
 
 all_licences = initialise_git.get_all_licences()
 all_licences = [licence["key"] for licence in all_licences]
@@ -23,7 +24,7 @@ all_licences = [licence["key"] for licence in all_licences]
 @click.help_option("--help", "-h")
 @click.version_option(
     __version__,
-    message=f"%(prog)s v%(version)s, running via Python v{python_version()} and click v{click.__version__}",
+    message=f"%(prog)s v%(version)s, running via Python v{python_version()} and click v{version("click")}",
 )
 def cli():
     """
@@ -187,19 +188,19 @@ def new(
 @click.argument("project_path")
 @click.argument("editor")
 def start(project_path: str, editor: str) -> None:
-    is_project, file_path = common.check_project(project_path)
+    file_path = common.check_project(project_path)
 
-    if is_project:
+    if file_path is not None:
         project_path = os.path.split(file_path)[0]
 
         match editor:
             case "vsc":
                 # BUG: Why doesn't this work?
-                run(["code"], project_path)
+                run(["code", str(project_path)])
 
             case "pycharm":
                 # BUG: Why doesn't this work?
-                run(["pycharm"], project_path)
+                run(["pycharm", str(project_path)])
 
             case "idle":
                 run([python_exe, "-m" "idlelib", file_path])
@@ -234,9 +235,9 @@ def start(project_path: str, editor: str) -> None:
     show_default=False,
 )
 def git(project_path: str, licence: str, desktop: bool) -> None:
-    is_project, _ = common.check_project(project_path)
+    file_path = common.check_project(project_path)
 
-    if is_project:
+    if file_path is not None:
         if desktop:
             run(["github", project_path])
         else:

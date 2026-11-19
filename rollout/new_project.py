@@ -28,7 +28,9 @@ def create_project_folders(project_name: str) -> bool:
     return True
 
 
-def create_entrypoint(project_name: str, packages: list, do_not_import: bool) -> None:
+def create_entrypoint(
+    project_name: str, packages: list[str] | None, do_not_import: bool
+) -> None:
     jinja = Environment()
 
     if do_not_import:

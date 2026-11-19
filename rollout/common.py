@@ -1,13 +1,13 @@
-from os import PathLike
+import os
 from pathlib import Path
 
 
-def check_project(path: str) -> tuple[True, Path] | tuple[False, None]:
+def check_project(path: str) -> Path | None:
     path = Path(path)
     if (path / "src" / "main.py").exists():
-        return True, path / "src" / "main.py"
+        return path / "src" / "main.py"
     else:
-        return False, None
+        return None
 
 
-pathlike = Path | str | PathLike
+pathlike = Path | str | os.PathLike

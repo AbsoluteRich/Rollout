@@ -8,6 +8,7 @@ click = "*"
 requests = "*"
 halo = {ref = "remove-terminal-check", git = "git+https://github.com/norweeg/halo.git"}
 jinja2 = "*"
+rollout = {path = ".", editable = true}
 
 [dev-packages]
 black = "*"
@@ -21,5 +22,6 @@ python_version = "3.12"
 [scripts]
 pre-commit = "invoke pre-commit"
 bump = "invoke bump"
+reformat = "invoke reformat"
 format = "invoke reformat"
 update = "invoke update-dependencies"

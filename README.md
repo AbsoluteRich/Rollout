@@ -1,4 +1,4 @@
-# Rollout (WIP)
+# Rollout
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -14,7 +14,8 @@ Rollout was made to learn more about CLIs and how to make them using Python. If 
 * ...want **customisable project templates** and a rich ecosystem of them, use [Cookiecutter](https://www.cookiecutter.io/) or [Copier](https://github.com/copier-org/copier).
 * ...have **Node.js installed** or want an alternative to Cookiecutter, you can use [generator-python](https://github.com/thejohnfreeman/generator-python), a project generator built with [Yeoman](https://yeoman.io/).
 * ...have Git installed and **use high-level Python tools** like [tox](https://tox.wiki/en/4.15.0/), use [skeleton](https://blog.jaraco.com/skeleton/).
-* ...want **advanced dependency management**, use the myriad tools out there like [Poetry](https://python-poetry.org/), [pipenv](https://pipenv.pypa.io/en/latest/), or [PDM](https://pdm-project.org/en/latest/).
+
+This also supports initialising projects with dependency managers other than PIP. Currently, only support for [pipenv](https://pipenv.pypa.io/en/latest/) is implemented, but [Poetry](https://python-poetry.org/) and [PDM](https://pdm-project.org/en/latest/) is planned.
 
 ## Install
 
@@ -23,49 +24,37 @@ Rollout was made to learn more about CLIs and how to make them using Python. If 
 
 Ensure that you have [Python](https://www.python.org/downloads/) 3.10 or above.
 
-<!--### From source>
+pipenv is the recommended way to work with this. `requirements.txt` files will no longer be distributed.
+
+### From source
+
 ```shell
-git clone https://github.com/AbsoluteRich/Rollout.git  # Or, if you have GitHub Desktop, clone the repository through that
+git clone https://github.com/AbsoluteRich/Rollout.git
 pipenv install
-# If you don't have pipenv:
-python -m venv .venv
-.venv/Scripts/Activate.ps1
-pip install -r requirements.txt
 ```
 
-<!--
-### pipx (recommended)
+### pipx
+
+When this actually releases:
+
 ```shell
 pip install pipx  # If you don't already have it
 pipx install rollout
 ```
--->
 
 ## Usage
 
 ```shell
-pipenv run python rollout my-new-project -d numpy pandas matplotlib 
-
-# If you didn't install with pipenv:
-.venv/Scripts/Activate.ps1
-python rollout my-new-project -d numpy pandas matplotlib 
-```
-
-<!--
-```sh
 rollout my-new-project -d numpy pandas matplotlib
+# Or, if you installed the program from source...
+pipenv run python rollout my-new-project -d numpy pandas matplotlib 
 ```
--->
 
 ## Contributing
 
 ```shell
-git clone https://github.com/AbsoluteRich/Rollout.git  # Or, if you have GitHub Desktop, clone the repository through that
-pipenv install -d  # If you have pipenv installed. If not...
-
-python -m venv .venv
-.venv/Scripts/Activate.ps1
-pip install -r requirements-dev.txt
+git clone https://github.com/AbsoluteRich/Rollout.git
+pipenv install -d
 ```
 
 ## Licence
