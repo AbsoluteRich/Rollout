@@ -18,10 +18,7 @@ def reformat(ctx: Context) -> None:
 
 @task
 def update_dependencies(ctx: Context) -> None:
-    for command in [
-        "pipenv update",
-    ]:
-        ctx.run(command)
+    ctx.run("pipenv update")
 
 
 @task
@@ -51,10 +48,12 @@ def bump(_: Context, label: str | None = None) -> None:
     print(f"Current version: {current_version}")
     print(f"Bumped version: {new_version_string}")
 
-    with open(version_file, "r+") as f:
+    with open(version_file, "r") as f:
         content = f.read()
-        f.seek(0)
-        content = content.replace(current_version, new_version_string)
+
+    content = content.replace(current_version, new_version_string)
+
+    with open(version_file, "w") as f:
         f.write(content)
 
     return
