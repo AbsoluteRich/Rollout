@@ -2,12 +2,9 @@ import os
 from pathlib import Path
 
 
-def check_project(path: str) -> Path | None:
-    path = Path(path)
-    if (path / "src" / "main.py").exists():
-        return path / "src" / "main.py"
+def check_project(path: Path) -> Path | None:
+    path = path / "src" / "main.py"
+    if path.exists():
+        return path
     else:
         return None
-
-
-pathlike = Path | str | os.PathLike
